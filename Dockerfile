@@ -1,24 +1,23 @@
-FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
+FROM python:3.13-slim
 
-# Install Python and pip
-RUN apt update && apt install -y python3 python3-pip ffmpeg
+# Install system dependencies
+RUN apt update && apt install -y ffmpeg
 
-# Set python3 as default
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-
-# Install torch + other dependencies
-RUN pip install --no-cache-dir \
-    torch==2.7.0+cu118 \
-    torchvision==0.22.0+cu118 \
-    torchaudio==2.7.0+cu118 \
-    --index-url https://download.pytorch.org/whl/cu118
-
-# Copy your code
+# Set working directory
 WORKDIR /app
+
+# Copy code
 COPY . .
 
-# Install rest of your Python dependencies
+# Install dependencies (CPU-only torch)
+RUN pip install --no-cache-dir \
+    torch==2.7.0+cpu \
+    torchvision==0.22.0+cpu \
+    torchaudio==2.7.0+cpu \
+    -f https://download.pytorch.org/whl/torch_stable.html
+
+# Install the rest from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Command to run your app
+# Set command
 CMD ["python", "main.py"]
