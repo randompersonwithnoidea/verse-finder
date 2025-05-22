@@ -11,10 +11,10 @@ COPY . .
 
 # Install dependencies (CPU-only torch)
 RUN pip install --no-cache-dir \
-    torch==2.7.0+cpu \
-    torchvision==0.22.0+cpu \
-    torchaudio==2.7.0+cpu \
-    -f https://download.pytorch.org/whl/torch_stable.html
+    torch==2.7.0 \
+    torchvision==0.22.0 \
+    torchaudio==2.7.0
+
 
 # Install the rest from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
