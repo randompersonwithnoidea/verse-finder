@@ -30,7 +30,7 @@ def get_router() -> Router:
                      msg.document.mime_type.startswith("video/"))) or
                    (msg.video))
     async def find_verses(message: Message):
-        msg = await message.answer("🔄 Started processing...")
+        msg = await message.answer("*🔄 Started processing...*", parse_mode="Markdown")
         
         # Determine the file type and get the file
         file = None
@@ -48,7 +48,7 @@ def get_router() -> Router:
             is_video = file.mime_type and file.mime_type.startswith("video/")
 
         if not file:
-            await msg.edit_text("❌ Unsupported file format.")
+            await msg.edit_text("*❌ Unsupported file format.*", parse_mode="Markdown")
             return
 
         try:
@@ -62,7 +62,7 @@ def get_router() -> Router:
             
             # For video files, we need to extract audio first
             if is_video:
-                await msg.edit_text("🎬 Extracting audio from video...")
+                await msg.edit_text("*🎬 Extracting audio from video...*", parse_mode="Markdown")
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as video_tmp:
                     await message.bot.download_file(file_path, destination=video_tmp)
                     video_path = video_tmp.name
@@ -78,28 +78,28 @@ def get_router() -> Router:
 
             matcher = QuranMatcher()
 
-            await msg.edit_text("🎧 Transcribing audio...")
+            await msg.edit_text("*🎧 Transcribing audio...*", parse_mode="Markdown")
             transcript = matcher.transcribe(audio_path)
 
             # Clean up the audio file
             os.remove(audio_path)
 
-            await msg.edit_text("🔍 Searching the verses...")
+            await msg.edit_text("*🔍 Searching the verses...*", parse_mode="Markdown")
             result = matcher.match(transcript)
 
             if result:
-                await msg.edit_text(f"✅ Process completed successfully.")
+                await msg.edit_text(f"*✅ Process completed successfully.*", parse_mode="Markdown")
 
                 result_text = "\n".join([f"Surah {v['surah']} Ayah {v['verse']}:\n{v['text']}" for v in result])
 
                 await message.reply(result_text)
             else:
-                await msg.edit_text("❌ No verses found.")
+                await msg.edit_text("*❌ No verses found.*", parse_mode="Markdown")
 
         except Exception:
             import traceback
             error_trace = traceback.format_exc()
             print(f"Error processing media: {error_trace}")
-            await msg.edit_text(f"❌ Error processing the file.")
+            await msg.edit_text(f"*❌ Error processing the file.*", parse_mode="Markdown")
 
     return router

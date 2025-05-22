@@ -13,10 +13,10 @@ dp = Dispatcher()
 dp.include_router(get_router())
 
 
-async def main():
+async def run_bot():
+    print("Bot started")
     await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    print("Bot started")
-    asyncio.run(main())
+    asyncio.run(run_bot())

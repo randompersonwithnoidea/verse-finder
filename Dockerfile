@@ -19,5 +19,7 @@ RUN pip install --no-cache-dir \
 # Install the rest from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+EXPOSE 10000
+
 # Set command
-CMD ["python", "main.py"]
+CMD ["python", "start.py"]
